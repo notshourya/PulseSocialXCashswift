@@ -24,20 +24,24 @@ class User {
   });
 
   static User fromSnap(DocumentSnapshot snap) {
-    var snapshot = snap.data() as Map<String, dynamic>;
-
-    return User(
-      username: snapshot["username"],
-      uid: snapshot["uid"],
-      email: snapshot["email"],
-      photoUrl: snapshot["photoUrl"] ?? "",
-      bio: snapshot["bio"],
-      followers: snapshot["followers"],
-      following: snapshot["following"],
-      accountBalance: snapshot["accountBalance"]?.toDouble() ?? 0.0, // Safely convert to double
-      upiId: snapshot["upiId"] ?? "${snapshot["username"]}@cashswift", // Default UPI ID if not set
-    );
+  if (!snap.exists) {
+    throw Exception("User does not exist");
   }
+  
+  var snapshot = snap.data() as Map<String, dynamic>? ?? {}; // Provides an empty map as a fallback
+
+  return User(
+    username: snapshot["username"] ?? "", // Provide default values to avoid null
+    uid: snapshot["uid"] ?? "",
+    email: snapshot["email"] ?? "",
+    photoUrl: snapshot["photoUrl"] ?? "",
+    bio: snapshot["bio"] ?? "",
+    followers: snapshot["followers"] ?? [],
+    following: snapshot["following"] ?? [],
+    accountBalance: snapshot["accountBalance"]?.toDouble() ?? 0.0, // Safely convert to double
+    upiId: snapshot["upiId"] ?? "${snapshot["username"] ?? ""}@cashswift", // Handle null username
+  );
+}
 
   Map<String, dynamic> toJson() => {
         "username": username,

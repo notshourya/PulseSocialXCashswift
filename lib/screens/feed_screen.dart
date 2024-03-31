@@ -1,23 +1,26 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pulse_social/screens/addpost_screen.dart';
 import 'package:pulse_social/screens/apollo_ai.dart';
 import 'package:pulse_social/utility/colors.dart';
+import 'package:pulse_social/utility/global_variables.dart';
 import 'package:pulse_social/widgets/post_card.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FeedScreen extends StatelessWidget {
   const FeedScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width; // Get the width of the screen
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mobileBackgroundcolor,
         title: SvgPicture.asset(
           'assets/Pulse_Social_logo.svg',
           color: Colors.white,
-          height: 40, // Adjust the size according to your AppBar height
+          height: 40, 
         ),
         actions: [
           IconButton(
@@ -30,6 +33,7 @@ class FeedScreen extends StatelessWidget {
           ),
         ],
       ),
+      
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: FirebaseFirestore.instance.collection('posts').snapshots(),
         builder: (context, snapshot) {
@@ -56,7 +60,13 @@ class FeedScreen extends StatelessWidget {
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
-              return PostCard(snap: snapshot.data!.docs[index].data());
+              return Container(
+                margin: EdgeInsets.symmetric(
+                  horizontal: width > webScreenSize ? width * 0.3 : 0,
+                  vertical: width > webScreenSize ? 15 : 0,
+                ),
+                child: PostCard(snap: snapshot.data!.docs[index].data()),
+              );
             },
           );
         },

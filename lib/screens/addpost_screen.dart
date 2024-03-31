@@ -129,7 +129,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
         centerTitle: true,
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator(color: Colors.blue,))
           : _file == null ? buildSelectionScreen() : buildPostForm(userProvider),
       floatingActionButton: _file != null ? FloatingActionButton(
         onPressed: () => postImage(

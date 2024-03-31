@@ -83,6 +83,7 @@ class _PostCardState extends State<PostCard> {
         _formatTimestamp(widget.snap['datePublished'].toDate());
 
     return Container(
+      
       margin: const EdgeInsets.fromLTRB(4, 2, 4, 2),
       //elevation: 1,
       //  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -91,7 +92,6 @@ class _PostCardState extends State<PostCard> {
         padding: const EdgeInsets.all(1.0),
         child: Column(
           children: [
-            // Header
             Container(
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10)
                   .copyWith(right: 0),

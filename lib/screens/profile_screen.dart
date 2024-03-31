@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pulse_social/resources/auth_methods.dart';
 import 'package:pulse_social/resources/firestore_methods.dart';
@@ -113,9 +114,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mobileBackgroundcolor,
-        title: Text("" ?? 'Loading...',
-            style: const TextStyle(fontWeight: FontWeight.bold)),
-        centerTitle: true,
+         title: SvgPicture.asset(
+          'assets/Pulse_Social_logo.svg',
+          color: Colors.white,
+          height: 40, 
+        ),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())

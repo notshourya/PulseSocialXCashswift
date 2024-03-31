@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 class CommentsScreen extends StatefulWidget {
   final Map<String, dynamic> snap;
 
-  const CommentsScreen({Key? key, required this.snap}) : super(key: key);
+  const CommentsScreen({super.key, required this.snap});
 
   @override
   _CommentsScreenState createState() => _CommentsScreenState();
@@ -98,6 +98,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                       decoration: BoxDecoration(
                         color: Colors.white24,
                         borderRadius: BorderRadius.circular(25),
+                        
                       ),
                       child: TextField(
                         controller: _commentController,

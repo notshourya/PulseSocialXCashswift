@@ -8,7 +8,7 @@ import 'package:pulse_social/screens/cashswift_screen.dart';
 import 'package:pulse_social/screens/profile_screen.dart';
 import 'package:pulse_social/screens/search_screen.dart';
 
-const webScreenSize = 1200;
+const webScreenSize = 1500;
 //const tabletScreenSize = 100;
 const mobileScreenSize = 1000;
 

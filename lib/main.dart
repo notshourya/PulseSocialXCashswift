@@ -7,7 +7,6 @@ import 'package:pulse_social/responsive/mobile_screen_layout.dart';
 import 'package:pulse_social/responsive/responsive_layout_screen.dart';
 import 'package:pulse_social/responsive/tablet_screen_layout_screen.dart';
 import 'package:pulse_social/responsive/webscreen_layout.dart';
-//import 'package:pulse_social/screens/home_screen.dart';
 import 'package:pulse_social/screens/login_screen.dart';
 import 'package:pulse_social/screens/signup_screen.dart';
 import 'package:pulse_social/utility/colors.dart';

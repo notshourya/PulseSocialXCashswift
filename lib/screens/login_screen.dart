@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pulse_social/resources/auth_methods.dart';
@@ -5,13 +6,15 @@ import 'package:pulse_social/responsive/mobile_screen_layout.dart';
 import 'package:pulse_social/responsive/responsive_layout_screen.dart';
 import 'package:pulse_social/responsive/tablet_screen_layout_screen.dart';
 import 'package:pulse_social/responsive/webscreen_layout.dart';
+import 'package:pulse_social/screens/forgot_password.dart';
 import 'package:pulse_social/screens/signup_screen.dart';
 import 'package:pulse_social/utility/colors.dart';
 import 'package:pulse_social/utility/global_variables.dart';
 import 'package:pulse_social/utility/utils.dart';
 import 'package:pulse_social/widgets/text_field_input.dart';
+ 
 
-class LoginScreen extends StatefulWidget {
+ class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
@@ -29,6 +32,13 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
     super.dispose();
   }
+
+  void navigateToForgotPassword() {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
+  );
+}
 
   Future<void> loginUser() async {
     setState(() => _isLoading = true);
@@ -56,6 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
         .push(MaterialPageRoute(builder: (context) => const SignupScreen()));
   }
 
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,7 +81,11 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 20),
-                SvgPicture.asset('assets/Pulse_Social_logo.svg', color: Colors.white,height: 100,), 
+              SvgPicture.asset(
+                'assets/Pulse_Social_logo.svg',
+                color: Colors.white,
+                height: 100,
+              ),
               const SizedBox(height: 0),
               TextFieldInput(
                 textEditingController: _emailController,
@@ -104,6 +119,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               fontWeight: FontWeight.bold,
                               fontSize: 16),
                         ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: navigateToForgotPassword,
+                child: const Text(
+                  'Forgot Password?',
+                  style: TextStyle(
+                      color: Colors.blue, fontWeight: FontWeight.bold),
                 ),
               ),
               const SizedBox(height: 20),

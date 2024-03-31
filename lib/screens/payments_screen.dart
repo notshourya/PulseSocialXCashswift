@@ -56,49 +56,73 @@ class _PaymentScreenState extends State<PaymentScreen> {
     });
   }
 
-  void _makePayment() async {
-    double amount = double.tryParse(_amountController.text) ?? 0;
-    String followerName = _followersDetails.firstWhere(
-      (follower) => follower['upiId'] == _selectedUserUPI,
-      orElse: () => {'username': 'Unknown'},
-    )['username'];
 
-    if (amount > 0 &&
-        widget.accountBalance >= amount &&
-        _selectedUserUPI.isNotEmpty) {
-      widget.onPaymentMade(amount);
+void _makePayment() async {
+  final double amount = double.tryParse(_amountController.text) ?? 0.0;
 
-      await FirebaseFirestore.instance.collection('transactions').add({
-        'uid': _auth.currentUser!.uid,
-        'upiId': _auth.currentUser!.email!.split('@')[0] + '@cashswift',
-        'amount': amount,
-        'date': DateTime.now().toIso8601String(),
-        'description': 'Payment of ₹$amount successful to $followerName',
-        'category': 'Transfer',
-      });
-      Navigator.of(context).pop();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Payment of ₹$amount successful to $followerName',
-            style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-          ),
-          backgroundColor: Colors.white,
-        ),
-      );
-    } else {
-      Navigator.of(context).pop();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Insufficient funds to make payment.',
-            style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-          ),
-          backgroundColor: Colors.white,
-        ),
-      );
-    }
+  if (amount <= 0) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Please enter a valid amount.")),
+    );
+    return;
   }
+
+  if (widget.accountBalance < amount) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Insufficient funds to make payment.")),
+    );
+    return;
+  }
+
+  String recipientUPI = _selectedUserUPI;
+  String recipientId;
+
+  var recipientQuerySnapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .where('upiId', isEqualTo: recipientUPI)
+      .limit(1)
+      .get();
+
+  if (recipientQuerySnapshot.docs.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Recipient not found.")),
+    );
+    return;
+  }
+
+  recipientId = recipientQuerySnapshot.docs.first.id;
+
+  var batch = FirebaseFirestore.instance.batch();
+
+  var senderRef = _firestore.collection('users').doc(_auth.currentUser!.uid);
+  batch.update(senderRef, {'accountBalance': FieldValue.increment(-amount)});
+
+  var recipientRef = _firestore.collection('users').doc(recipientId);
+  batch.update(recipientRef, {'accountBalance': FieldValue.increment(amount)});
+
+  var transactionRef = _firestore.collection('transactions').doc();
+  batch.set(transactionRef, {
+    'from': _auth.currentUser!.uid,
+    'to': recipientId,
+    'amount': amount,
+    'date': Timestamp.now(),
+    'description': 'Payment made to $recipientUPI',
+  });
+
+  await batch.commit().then((_) {
+    widget.onPaymentMade(amount);
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Payment of ₹$amount to $recipientUPI was successful!")),
+    );
+  }).catchError((error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Transaction failed: $error")),
+    );
+  });
+}
+
+
 
   @override
   Widget build(BuildContext context) {
